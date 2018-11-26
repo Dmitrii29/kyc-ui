@@ -1,10 +1,11 @@
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
+import java.util.List;
+
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
 /**
@@ -18,7 +19,7 @@ public class SingUpPage {
         this.driver = driver;
     }
 
-    private By loginField = By.xpath("//*[@name='login' and @formcontrolname='login']");
+    private By loginField = By.xpath("//*[@name='login']");
     private By companyNameField = By.xpath("//*[@name='web' and @formcontrolname='name']");
     private By emailCompanyField = By.xpath("//*[@id='email' and @name='email']");
     private By idnCompanyField = By.xpath("//*[@id='idn2' and @name]");
@@ -29,16 +30,28 @@ public class SingUpPage {
     private By firstNameField = By.xpath("//*[@id='firstName' and @name]");
     private By lastNameField = By.xpath("//*[@id='name1' and @name]");
     private By middleNameField = By.xpath("//*[@id='name2' and @name]");
-    private By agreeCheckBox = By.xpath("//label[@class='custom-control-label' and @for]");
+    private By agreeCheckBox = By.xpath("//label[@class='custom-control-label']");//By.xpath("//label[@class='custom-control-label' and @for]");
     private By submitButton = By.xpath("//*[@type='submit']");
+    private By errorLabel = By.id("smallError");
+    private String errorByText = "//*[@id='smallError' and text()='%s']";
 
-    public SingUpPage typeloginField(String login){
+    public SingUpPage typeLoginField(String login){
         driver.findElement(loginField).sendKeys(login);
+        return this;
+    }
+
+    public SingUpPage clickLoginField(){
+        driver.findElement(loginField).click();
         return this;
     }
 
     public SingUpPage typeCompanyNameField(String companyName){
         driver.findElement(companyNameField).sendKeys(companyName);
+        return this;
+    }
+
+    public SingUpPage clickCompanyNameField(){
+        driver.findElement(companyNameField).click();
         return this;
     }
 
@@ -99,5 +112,18 @@ public class SingUpPage {
 
     public boolean isSubmitButtonEnable(){
         return driver.findElement(submitButton).isEnabled();
+    }
+
+    public List<WebElement> getErrors(){
+        return driver.findElements(errorLabel);
+    }
+
+    public String getErrorByNumber(int errorNumber){
+        return getErrors().get(errorNumber - 1).getText();
+    }
+
+    public boolean isErrorVisible(String message){
+        return driver.findElements(By.xpath(String.format(errorByText, message))).size() > 0
+                && driver.findElements(By.xpath(String.format(errorByText, message))).get(0).isDisplayed();
     }
 }
