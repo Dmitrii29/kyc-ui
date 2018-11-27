@@ -1,11 +1,15 @@
+import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.WebDriverRunner;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
 /**
@@ -13,11 +17,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElem
  */
 public class SingUpPage {
 
-    private WebDriver driver;
-
-    public SingUpPage(WebDriver driver){
-        this.driver = driver;
-    }
+    //WebDriver driver;
 
     private By loginField = By.xpath("//*[@name='login']");
     private By companyNameField = By.xpath("//*[@name='web' and @formcontrolname='name']");
@@ -35,87 +35,101 @@ public class SingUpPage {
     private By errorLabel = By.id("smallError");
     private String errorByText = "//*[@id='smallError' and text()='%s']";
 
+    public SingUpPage open(String path) {
+        Selenide.open(path);
+        return this;
+    }
+
     public SingUpPage typeLoginField(String login){
-        driver.findElement(loginField).sendKeys(login);
+        $(loginField).sendKeys(login);
         return this;
     }
 
     public SingUpPage clickLoginField(){
-        driver.findElement(loginField).click();
+        $(loginField).click();
         return this;
     }
 
     public SingUpPage typeCompanyNameField(String companyName){
-        driver.findElement(companyNameField).sendKeys(companyName);
+        $(companyNameField).sendKeys(companyName);
         return this;
     }
 
     public SingUpPage clickCompanyNameField(){
-        driver.findElement(companyNameField).click();
+        $(companyNameField).click();
         return this;
     }
 
     public SingUpPage typeEmailCompanyField(String emailCompany){
-        driver.findElement(emailCompanyField).sendKeys(emailCompany);
+        $(emailCompanyField).sendKeys(emailCompany);
         return this;
     }
 
     public SingUpPage typeIdnCompanyField(String idnCompany){
-        driver.findElement(idnCompanyField).sendKeys(idnCompany);
+        $(idnCompanyField).sendKeys(idnCompany);
         return this;
     }
 
     public SingUpPage typeLegalAddressField(String legalAddress){
-        driver.findElement(legalAddressField).sendKeys(legalAddress);
+        $(legalAddressField).sendKeys(legalAddress);
         return this;
     }
 
     public SingUpPage setActivityType(String activityType){
-        driver.findElement(activityTypeDropDown).click();
-        new WebDriverWait(driver, 5)
+
+        //dropdown select for selenide
+        $(activityTypeDropDown).selectOption(activityType);
+
+        //dropdown click for selenium
+        /*new WebDriverWait(driver, 5)
                 .until(visibilityOfElementLocated(By.xpath(String.format(activityTypeDropDownOption, activityType))))
-                .click();
+                .click();*/
         return this;
     }
 
     public SingUpPage typePhoneNumberField(String phoneNumber){
-        driver.findElement(phoneNumberField).sendKeys(phoneNumber);
+        $(phoneNumberField).sendKeys(phoneNumber);
         return this;
     }
 
     public SingUpPage typeFirstNameField(String firstName){
-        driver.findElement(firstNameField).sendKeys(firstName);
+        $(firstNameField).sendKeys(firstName);
         return this;
     }
 
     public SingUpPage typeLastNameField(String lastName){
-        driver.findElement(lastNameField).sendKeys(lastName);
+        $(lastNameField).sendKeys(lastName);
         return this;
     }
 
     public SingUpPage typeMiddleNameField(String middleName){
-        driver.findElement(middleNameField).sendKeys(middleName);
+        $(middleNameField).sendKeys(middleName);
         return this;
     }
 
     public SingUpPage setAgreeCheckBox(boolean value){
-        WebElement checkbox = driver.findElement(agreeCheckBox);
+        //checkbox click for selenide
+        $(agreeCheckBox).setSelected(value);
+
+
+        //checkbox click for selenium
+        /*WebElement checkbox = driver.findElement(agreeCheckBox);
         if(!checkbox.isSelected() == value){
             checkbox.click();
-        }
+        }*/
         return this;
     }
 
     public void submitRegistration(){
-        driver.findElement(submitButton).click();
+        $(submitButton).click();
     }
 
     public boolean isSubmitButtonEnable(){
-        return driver.findElement(submitButton).isEnabled();
+        return $(submitButton).isEnabled();
     }
 
-    public List<WebElement> getErrors(){
-        return driver.findElements(errorLabel);
+    public ElementsCollection getErrors(){
+        return $$(errorLabel);
     }
 
     public String getErrorByNumber(int errorNumber){
@@ -123,7 +137,12 @@ public class SingUpPage {
     }
 
     public boolean isErrorVisible(String message){
-        return driver.findElements(By.xpath(String.format(errorByText, message))).size() > 0
-                && driver.findElements(By.xpath(String.format(errorByText, message))).get(0).isDisplayed();
+
+        //for selenide
+        return $(By.xpath(String.format(errorByText, message))).isDisplayed();
+
+        //for selenium
+        /*return WebDriverRunner.getWebDriver().findElement(By.xpath(String.format(errorByText, message))).size() > 0
+                && WebDriverRunner.getWebDriver().findElement(By.xpath(String.format(errorByText, message))).get(0).isDisplayed();*/
     }
 }

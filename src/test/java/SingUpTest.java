@@ -1,30 +1,28 @@
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import com.codeborne.selenide.Configuration;
+import org.junit.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.util.concurrent.TimeUnit;
+
+import static com.codeborne.selenide.Configuration.baseUrl;
+import static com.codeborne.selenide.Configuration.browser;
 
 /**
  * Created by dmalivanov on 11/26/18.
  */
 public class SingUpTest {
 
-    WebDriver driver;
-    SingUpPage page;
+    private SingUpPage page;
 
-    @Before
+    @BeforeClass
     public void setUp(){
-        driver = new ChromeDriver();
-        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-        driver.get("https://test.kyclient.net/credentials/sign-up");
+       baseUrl = "https://test.kyclient.net/credentials/sign-up";
     }
 
     @Test
     public void testLoginEmptyError(){
-        page = new SingUpPage(driver);
+        page = new SingUpPage();
         page.clickLoginField()
                 .clickCompanyNameField();
 
@@ -33,7 +31,7 @@ public class SingUpTest {
 
     @Test
     public void testSubmitButtonNonClicable(){
-        page = new SingUpPage(driver);
+        page = new SingUpPage();
 
         Assert.assertFalse("Button clicable!!!", page.isSubmitButtonEnable());
     }
@@ -50,13 +48,7 @@ public class SingUpTest {
     //test nothing
     @Test
     public void testChooseActivityType(){
-        page = new SingUpPage(driver);
+        page = new SingUpPage();
         page.setActivityType("BANK");
-    }
-
-
-    @After
-    public void tearDown(){
-        driver.quit();
     }
 }
